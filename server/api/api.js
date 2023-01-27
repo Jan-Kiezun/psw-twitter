@@ -1,9 +1,24 @@
 ﻿const express = require("express");
+const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const { User } = require("./src/models/users");
+const { Tweet } = require("./src/models/tweets");
+const cors = require("cors");
 
-const app = express();
+const whitelist = ["http://localhost:3000", "http://localhost:5001"];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
 dotenv.config();
 const PORT = process.env.PORT || 5001;
 const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/twitterDB";
@@ -25,5 +40,6 @@ async function start() {
 }
 
 app.use("/users", require("./src/routes/userRoutes"));
+app.use("/tweets", require("./src/routes/tweetRoutes"));
 
 start();

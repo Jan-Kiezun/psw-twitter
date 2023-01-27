@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
+import { getTweets } from "./features/twitter/tweetSlice";
+import { getUsers } from "./features/twitter/userSlice";
 
 import LeftSidebar from "./components/LeftNavbar";
 import Home from "./components/homeView/Home";
@@ -16,7 +18,15 @@ import Login from "./components/Login";
 
 function App() {
   const dispatch = useDispatch();
+  const users = useSelector((state) => state.userReducer.users);
   const user = useSelector((state) => state.userReducer.user);
+  const tweets = useSelector((state) => state.tweetReducer.tweets);
+
+  useEffect(() => {
+    if (tweets === []) dispatch(getTweets());
+    if (users === []) dispatch(getUsers());
+  }, [dispatch, tweets, users]);
+
   return (
     <Router>
       {_.isEmpty(user) && <Login />}

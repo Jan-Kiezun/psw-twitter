@@ -2,7 +2,7 @@
 import axios from "axios";
 import _ from "lodash";
 
-const tweetsURL = "http://localhost:5000/tweets";
+const tweetsURL = "http://localhost:5001/tweets";
 
 const initialState = {
   tweets: [],
@@ -46,10 +46,22 @@ export const tweetSlice = createSlice({
       .addCase(getTweets.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Add any fetched tweets to the array
-        state.tweets = state.tweets.concat(action.payload);
+        state.tweets = action.payload;
+      })
+      .addCase(getTweets.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(addNewTweet.pending, (state, action) => {
+        state.status = "loading";
       })
       .addCase(addNewTweet.fulfilled, (state, action) => {
         state.tweets.push(action.payload);
+      })
+      .addCase(addNewTweet.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });

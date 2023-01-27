@@ -20,6 +20,7 @@ const initialState = {
     followers: 100,
     role: "user",
   },
+  users: [],
   status: "idle",
   loading: false,
   error: null,
@@ -70,6 +71,7 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(getUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.loading = false;
         state.user = action.payload;
       })
@@ -82,8 +84,9 @@ export const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(getUsers.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.loading = false;
-        state.user = action.payload;
+        state.users = action.payload;
       })
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
