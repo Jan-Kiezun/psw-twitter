@@ -5,15 +5,15 @@ import _ from "lodash";
 const messagesURL = "http://localhost:5001/messages";
 
 const initialState = {
-  messages: [],
+  messages: {},
   status: "idle",
   error: null,
 };
 
-export const fetchMessages = createAsyncThunk(
-  "messages/fetchMessages",
-  async () => {
-    const response = await axios.get(messagesURL);
+export const getMessages = createAsyncThunk(
+  "messages/getMessages",
+  async (user_id) => {
+    const response = await axios.get(messagesURL + `/${user_id}`);
     return response.data;
   }
 );
@@ -45,15 +45,28 @@ export const messageSlice = createSlice({
       }
     },
   },
-  extraReducers: {
-    [fetchMessages.pending]: (state, action) => {
-      state.status = "loading";
-    },
-    [fetchMessages.fulfilled]: (state, action) => {
-      state.status = "succeeded";
-      // Add any fetched messages to the array
-      state.messages = state.messages.concat(action.payload);
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getMessages.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getMessages.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Add any fetched messages to the array
+        state.allMessages = action.payload;
+        state.users = Object.keys(action.payload);
+      })
+      .addCase(getMessages.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(addNewMessage.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(addNewMessage.fulfilled, (state, action) => {
+        state.messages.push(action.payload);
+      });
   },
 });
 

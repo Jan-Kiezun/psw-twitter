@@ -1,5 +1,6 @@
 ﻿import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import _ from "lodash";
 
 import Avatar from "../../Avatar";
 
@@ -37,15 +38,17 @@ function AddTweet() {
           onChange={textareaOnChange}
         />
         <div className="flex flex-row-reverse">
-          <button
-            className={`bg-blue-500 px-4 py-1 rounded-full text-white font-semibold ${
-              tweetContent ? "" : "opacity-50 cursor-not-allowed"
-            }`}
-            type="submit"
-            disabled={!tweetContent}
-          >
-            Tweet
-          </button>
+          {!_.isEmpty(user) && (
+            <button
+              className={`bg-blue-500 px-4 py-1 rounded-full text-white font-semibold ${
+                tweetContent ? "" : "opacity-50 cursor-not-allowed"
+              }`}
+              type="submit"
+              disabled={!tweetContent}
+            >
+              Tweet
+            </button>
+          )}
         </div>
       </form>
     </div>

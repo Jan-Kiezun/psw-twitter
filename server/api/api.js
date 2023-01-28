@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const { User } = require("./src/models/users");
 const { Tweet } = require("./src/models/tweets");
+const { Messages } = require("./src/models/messages");
 const cors = require("cors");
 
 const whitelist = ["http://localhost:3000", "http://localhost:5001"];
@@ -30,6 +31,8 @@ async function start() {
       useUnifiedTopology: true,
     });
 
+    //find all messages from mongoDB database with mongoose
+
     app.listen(PORT, () =>
       console.log(`Server has been started on port ${PORT}`)
     );
@@ -41,5 +44,6 @@ async function start() {
 
 app.use("/users", require("./src/routes/userRoutes"));
 app.use("/tweets", require("./src/routes/tweetRoutes"));
+app.use("/messages", require("./src/routes/messageRoutes"));
 
 start();

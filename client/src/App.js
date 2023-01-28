@@ -36,7 +36,9 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/messages" element={<Messages />} />
+            <Route path="/messages/:id" element={<Messages />} />
             <Route path="/profile/:id" element={<Profile />} />
+
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </div>
