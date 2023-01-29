@@ -13,7 +13,7 @@ import { getUsers } from "./features/twitter/userSlice";
 import LeftSidebar from "./components/LeftNavbar";
 import Home from "./components/homeView/Home";
 import Messages from "./components/messagesView/Messages";
-import Profile from "./components/Profile";
+import Profile from "./components/profile/Profile";
 import Login from "./components/Login";
 
 function App() {
@@ -36,8 +36,8 @@ function App() {
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/messages" element={<Messages />} />
-            <Route path="/messages/:id" element={<Messages />} />
-            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/messages/:user_id" element={<Messages />} />
+            <Route path="/profile/:user_id" element={<Profile />} />
 
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>

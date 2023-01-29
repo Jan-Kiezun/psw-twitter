@@ -1,12 +1,13 @@
 ﻿import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import _ from "lodash";
 
 function LeftSidebar() {
+  const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer.user);
   return (
-    <nav className="w-full min-w-[300px] flex flex-col">
+    <nav className="w-full min-w-[300px] flex flex-col sticky">
       <img
         className="my-2 mt-4 ml-6"
         draggable="false"
@@ -32,24 +33,32 @@ function LeftSidebar() {
         <Link
           draggable="false"
           className="p-4 pl-6 m-1 hover:bg-gray-700 rounded-full"
-          to={`/profile/${user.username}`}
+          to={`/profile/${user.user_id}`}
         >
           <li>Profile</li>
         </Link>
       </ul>
-      <div className="mt-[calc(100vh-320px)]">
+      <div className="mt-[calc(100vh-380px)]">
         {!_.isEmpty(user) && (
-          <Link
+          <button
             draggable="false"
-            className="text-xl p-4 pl-6 m-1 hover:bg-gray-700 rounded-full"
+            className="text-xl p-4 pl-6 m-1 hover:bg-gray-700/90 rounded-full flex gap-4 items-center"
             onClick={() => {
               localStorage.removeItem("token");
+              navigate("/home");
               window.location.reload();
             }}
-            to="/"
           >
-            <span>Logout user {user.username}</span>
-          </Link>
+            <div className="flex items-center gap-2">
+              <img
+                className="rounded-full w-10 h-10"
+                src={user.urlToProfilePicture}
+                alt="profile"
+              />
+              <span className="font-semibold">{user.username}</span>
+            </div>
+            <span>Log out</span>
+          </button>
         )}
       </div>
     </nav>

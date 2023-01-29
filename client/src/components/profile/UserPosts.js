@@ -1,20 +1,15 @@
-﻿import React, { useEffect } from "react";
-import Avatar from "../../Avatar";
+﻿import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getTweets } from "../../../features/twitter/tweetSlice";
-import { getUsers } from "../../../features/twitter/userSlice";
+import Avatar from "../Avatar";
+import { useParams } from "react-router-dom";
 
-function Tweetlist() {
+function UserPosts() {
   const tweets = useSelector((state) => state.tweetReducer.tweets);
   const tweetStatus = useSelector((state) => state.tweetReducer.status);
   const userStatus = useSelector((state) => state.userReducer.status);
   const userReducer = useSelector((state) => state.userReducer);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!tweets.length) dispatch(getTweets());
-    if (!userReducer.users.length) dispatch(getUsers());
-  }, [dispatch, tweets, userReducer.users]);
+  const { user } = useParams();
 
   return (
     <div>
@@ -22,6 +17,7 @@ function Tweetlist() {
         userStatus === "succeeded" &&
         tweets
           .filter((tweet) => !tweet.repliesTo)
+          .filter((tweet) => tweet.user === user)
           .map((tweet) => (
             <div
               key={tweet.id}
@@ -82,7 +78,9 @@ function Tweetlist() {
                       className="text-[rgb(91,112,131)]
                         hover:text-[rgb(29,161,242)]
                         cursor-pointer"
-                      onClick={() => {}}
+                      onClick={() => {
+                        console.log("retweet", tweet.user);
+                      }}
                     >
                       Retweet
                     </li>
@@ -102,4 +100,4 @@ function Tweetlist() {
   );
 }
 
-export default Tweetlist;
+export default UserPosts;

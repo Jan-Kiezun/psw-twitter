@@ -21,6 +21,7 @@ const initialState = {
     role: "user",
   },
   users: [],
+  userProfile: {},
   status: "idle",
   loading: false,
   error: null,
@@ -63,6 +64,11 @@ export const userSlice = createSlice({
   reducers: {
     login: (state, action) => {
       state.user = action.payload;
+    },
+    selectUser: (state, action) => {
+      console.log("selectUser", action.payload);
+      state.userProfile =
+        _.find(state.users, { user_id: action.payload }) || {};
     },
   },
   extraReducers: (builder) => {
@@ -131,6 +137,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { login } = userSlice.actions;
+export const { login, selectUser } = userSlice.actions;
 
 export default userSlice.reducer;

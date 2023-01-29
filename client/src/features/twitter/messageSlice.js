@@ -18,12 +18,10 @@ export const getMessages = createAsyncThunk(
   }
 );
 
-export const addNewMessage = createAsyncThunk(
-  "messages/addNewMessage",
-  async (initialMessage) => {
-    const response = await axios.post(messagesURL, {
-      text: initialMessage.text,
-    });
+export const postMessage = createAsyncThunk(
+  "messages/postMessage",
+  async ({ from, to, message }) => {
+    const response = await axios.post(`${messagesURL}/${from}/${to}`, message);
     return response.data;
   }
 );
@@ -61,11 +59,21 @@ export const messageSlice = createSlice({
         state.error = action.error.message;
       })
 
-      .addCase(addNewMessage.pending, (state, action) => {
+      .addCase(postMessage.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(addNewMessage.fulfilled, (state, action) => {
-        state.messages.push(action.payload);
+      .addCase(postMessage.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Add any fetched messages to the array
+        const { from, to, message } = action.payload;
+        state.allMessages = {
+          ...state.allMessages,
+          [to]: [...state.allMessages[to], message],
+        };
+      })
+      .addCase(postMessage.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });

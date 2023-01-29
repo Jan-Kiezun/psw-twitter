@@ -31,7 +31,13 @@ function AddTweet() {
         }}
       >
         <textarea
-          className="bg-black outline-none text-white w-full p-2 resize-none overflow-hidden min-h-[50px] text-lg"
+          className="w-full p-2 bg-black
+          focus:outline-none focus:ring-2 focus:ring-[rgb(47,51,54)]
+          focus:border-transparent
+          placeholder-[rgb(91,112,131)]
+          placeholder-opacity-50
+          resize-none
+          "
           placeholder="What's happening?"
           ref={textareaRef}
           value={tweetContent}
@@ -40,7 +46,7 @@ function AddTweet() {
         <div className="flex flex-row-reverse">
           {!_.isEmpty(user) && (
             <button
-              className={`bg-blue-500 px-4 py-1 rounded-full text-white font-semibold ${
+              className={`bg-blue-500 px-4 py-1 mt-2 rounded-full text-white font-semibold ${
                 tweetContent ? "" : "opacity-50 cursor-not-allowed"
               }`}
               type="submit"
