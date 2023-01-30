@@ -1,4 +1,4 @@
-﻿import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+﻿import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 import _ from "lodash";
 
@@ -6,6 +6,8 @@ const messagesURL = "http://localhost:5001/messages";
 
 const initialState = {
   messages: {},
+  secretChats: [],
+  secretChatsMessages: {},
   status: "idle",
   error: null,
 };
@@ -41,6 +43,25 @@ export const messageSlice = createSlice({
       if (existingMessage) {
         existingMessage.text = text;
       }
+    },
+    addSecretChat: (state, action) => {
+      state.secretChats = _.uniq([...state.secretChats, action.payload]);
+      console.log(state.secretChatsMessages);
+      state.secretChatsMessages = {
+        ...state.secretChatsMessages,
+        [action.payload]: [],
+      };
+      console.log(state.secretChatsMessages);
+      console.log(action.payload);
+    },
+    addSecretMessage: (state, action) => {
+      const { from, to, message } = action.payload;
+      console.log(current(state.secretChatsMessages), action.payload);
+      const chat_id = to.slice(11, to.length);
+      state.secretChatsMessages = {
+        ...state.secretChatsMessages,
+        [chat_id]: [...state.secretChatsMessages[chat_id], message],
+      };
     },
   },
   extraReducers: (builder) => {
@@ -78,6 +99,7 @@ export const messageSlice = createSlice({
   },
 });
 
-export const { messageAdded, messageUpdated } = messageSlice.actions;
+export const { messageAdded, messageUpdated, addSecretChat, addSecretMessage } =
+  messageSlice.actions;
 
 export default messageSlice.reducer;
