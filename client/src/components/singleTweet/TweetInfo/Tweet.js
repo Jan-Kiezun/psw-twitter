@@ -103,7 +103,7 @@ function Tweet() {
               </button>
             </form>
           ) : (
-            <p className="text-white text-lg font-semibold mt-2 mb-2 w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+            <p className="text-white text-lg font-semibold mt-2 mb-2 w-full max-h-[40px]">
               {tweet.repliesTo && (
                 <Link to={`/post/${tweet.repliesTo}`}>
                   <span

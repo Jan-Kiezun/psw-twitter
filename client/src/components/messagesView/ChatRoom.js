@@ -131,6 +131,7 @@ function ChatRoom() {
           <div className="flex flex-col max-h-[calc(100vh-100px)] gap-2 overflow-y-scroll scrollbar-hide">
             {messages.map((message) => (
               <div
+                key={messages.length + message.timestamp + chat_id}
                 className={`${
                   user.user_id === message.user_id ? "ml-auto" : ""
                 }`}

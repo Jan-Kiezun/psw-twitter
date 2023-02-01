@@ -8,6 +8,7 @@ function SearchedTweets() {
   const tweetReducer = useSelector((state) => state.tweetReducer);
   const searchedTweets = tweetReducer.searchedTweets;
   const userReducer = useSelector((state) => state.userReducer);
+  const user = userReducer.user;
   const { search_type, query } = useParams();
 
   return (
@@ -87,9 +88,13 @@ function SearchedTweets() {
                       Retweet
                     </li>
                     <li
-                      className="text-[rgb(91,112,131)]
-                  hover:text-[rgb(29,161,242)]
-                  cursor-pointer"
+                      className={`${
+                        user.likes.includes(parseInt(tweet.id))
+                          ? "text-red-500"
+                          : "text-[rgb(91,112,131)]"
+                      }
+                          hover:text-[rgb(29,161,242)]
+                          cursor-pointer`}
                     >
                       Like
                     </li>
