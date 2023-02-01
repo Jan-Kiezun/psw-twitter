@@ -2,10 +2,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import _ from "lodash";
+import { Cookies, useCookies } from "react-cookie";
 
 function LeftSidebar() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer.user);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   return (
     <nav className="w-full min-w-[300px] h-[100vh] flex flex-col sticky">
       <img
@@ -44,9 +46,11 @@ function LeftSidebar() {
             draggable="false"
             className="text-xl p-4 pl-6 m-1 hover:bg-gray-700/90 rounded-full flex gap-4 items-center"
             onClick={() => {
-              localStorage.removeItem("token");
-              navigate("/home");
-              window.location.reload();
+              removeCookie("user");
+              setTimeout(() => {
+                navigate("/home");
+                window.location.reload();
+              }, 200);
             }}
           >
             <div className="flex items-center gap-2">

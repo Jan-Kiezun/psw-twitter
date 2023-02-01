@@ -6,6 +6,7 @@ import userSlice, { login } from "../../features/twitter/userSlice";
 import { Link } from "react-router-dom";
 import { getTweets } from "../../features/twitter/tweetSlice";
 import { getUsers } from "../../features/twitter/userSlice";
+import { useCookies } from "react-cookie";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -17,11 +18,13 @@ function Login() {
   const dispatch = useDispatch();
   const userReducer = useSelector((state) => state.userReducer);
   const tweets = useSelector((state) => state.tweetReducer.tweets);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
 
   useEffect(() => {
     if (!tweets.length) dispatch(getTweets());
     if (!userReducer.users.length) dispatch(getUsers());
-  }, [dispatch, tweets, userReducer.users]);
+    if (cookies.user) dispatch(login(cookies.user));
+  }, [dispatch, tweets, userReducer.users, cookies.user]);
 
   return (
     <Formik
@@ -29,6 +32,7 @@ function Login() {
       initialValues={{ email: "", username: "", password: "" }}
       validationSchema={validationSchema}
       onSubmit={(values) => {
+        setCookie("user", values, { path: "/" });
         dispatch(login(values));
       }}
     >
