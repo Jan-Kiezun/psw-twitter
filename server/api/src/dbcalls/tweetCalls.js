@@ -8,6 +8,7 @@ exports.getTweets = async (query = "") => {
   const result = await Tweet.find({
     content: { $regex: query, $options: "i" },
   });
+  console.log(result);
   return result;
 };
 
@@ -15,13 +16,22 @@ exports.createTweet = async (tweetData) => {
   const tweetId = await Tweet.find().sort({ id: -1 }).limit(1);
   const tweet = new Tweet({
     ...tweetData,
-    id: "" + (parseInt(tweetId[0].id) + 1),
+    id: tweetId[0].id + 1,
   });
   return await tweet.save();
 };
 
 exports.updateTweet = async (id, tweet) => {
-  return await Tweet.findOneAndUpdate({ id: id }, tweet, { new: true });
+  const returnValue = await Tweet.updateOne(
+    { id: parseInt(id) },
+    {
+      $set: {
+        content: tweet.content,
+      },
+    },
+    { new: true }
+  );
+  return returnValue;
 };
 
 exports.deleteTweet = async (id) => {
