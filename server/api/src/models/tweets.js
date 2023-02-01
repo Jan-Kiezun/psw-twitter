@@ -2,6 +2,10 @@
 const Schema = mongoose.Schema;
 const validator = require("mongoose-unique-validator");
 const TweetSchema = new Schema({
+  _id: {
+    type: String,
+    required: true,
+  },
   id: {
     type: String,
     required: true,
@@ -33,5 +37,5 @@ const TweetSchema = new Schema({
   },
 });
 TweetSchema.plugin(validator);
-const Tweet = mongoose.model("tweets", TweetSchema);
+const Tweet = mongoose.model("tweets", TweetSchema, "tweets");
 module.exports = { Tweet };

@@ -22,15 +22,17 @@ exports.createTweet = async (tweetData) => {
 };
 
 exports.updateTweet = async (id, tweet) => {
-  const returnValue = await Tweet.updateOne(
-    { id: parseInt(id) },
-    {
-      $set: {
-        content: tweet.content,
-      },
-    },
-    { new: true }
-  );
+  // const returnValue = await Tweet.updateOne(
+  //   { id: parseInt(id) },
+  //   {
+  //     $set: {
+  //       content: tweet.content,
+  //     },
+  //   },
+  //   { new: true }
+  // );
+  const returnValue = await Tweet.find({ id: id });
+  console.log(returnValue);
   return returnValue;
 };
 
