@@ -6,6 +6,7 @@ import {
 } from "../../features/twitter/messageSlice";
 import { getUsers } from "../../features/twitter/userSlice";
 import { Link } from "react-router-dom";
+import _ from "lodash";
 
 function ChatList() {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ function ChatList() {
   const secretChats = useSelector((state) => state.messageReducer.secretChats);
 
   useEffect(() => {
-    dispatch(getMessages(user.user_id));
+    if (_.isEmpty(allMessages)) dispatch(getMessages(user.user_id));
     if (!userReducer.users.length) dispatch(getUsers());
   }, [dispatch]);
 

@@ -24,10 +24,11 @@ export const searchTweets = createAsyncThunk(
   }
 );
 
-export const addNewTweet = createAsyncThunk(
-  "tweets/addNewTweet",
+export const postTweet = createAsyncThunk(
+  "tweets/postTweet",
   async (initialTweet) => {
     const response = await axios.post(tweetsURL, initialTweet);
+    console.log(response.data);
     return response.data;
   }
 );
@@ -62,13 +63,14 @@ export const tweetSlice = createSlice({
         state.error = action.error.message;
       })
 
-      .addCase(addNewTweet.pending, (state, action) => {
+      .addCase(postTweet.pending, (state, action) => {
         state.status = "loading";
       })
-      .addCase(addNewTweet.fulfilled, (state, action) => {
-        state.tweets.push(action.payload);
+      .addCase(postTweet.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.tweets = state.tweets.concat(action.payload);
       })
-      .addCase(addNewTweet.rejected, (state, action) => {
+      .addCase(postTweet.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       })

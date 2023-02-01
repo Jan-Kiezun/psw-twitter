@@ -13,6 +13,7 @@ function Replies() {
     (tweet) => tweet.repliesTo === parseInt(post_id)
   );
   const userReducer = useSelector((state) => state.userReducer);
+  const user = userReducer.user;
 
   return (
     <div>
@@ -94,9 +95,13 @@ function Replies() {
                     Retweet
                   </li>
                   <li
-                    className="text-[rgb(91,112,131)]
+                    className={`${
+                      user.likes.includes(parseInt(reply.id))
+                        ? "text-[rgb(29,161,242)]"
+                        : "text-[rgb(91,112,131)]"
+                    }
                         hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                        cursor-pointer`}
                   >
                     Like
                   </li>

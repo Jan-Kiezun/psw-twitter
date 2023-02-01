@@ -11,8 +11,13 @@ exports.getTweets = async (query = "") => {
   return result;
 };
 
-exports.createTweet = async (Tweet) => {
-  return await Tweet.create(Tweet);
+exports.createTweet = async (tweetData) => {
+  const tweetId = await Tweet.find().sort({ id: -1 }).limit(1);
+  const tweet = new Tweet({
+    ...tweetData,
+    id: "" + (parseInt(tweetId[0].id) + 1),
+  });
+  return await tweet.save();
 };
 
 exports.updateTweet = async (id, Tweet) => {

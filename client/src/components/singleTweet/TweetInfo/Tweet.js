@@ -6,15 +6,12 @@ import Avatar from "../../Avatar";
 function Tweet() {
   const { post_id } = useParams();
   const tweets = useSelector((state) => state.tweetReducer.tweets);
-  const tweet = tweets.find((tweet) => tweet.id === parseInt(post_id));
+  const tweet = tweets.find((tweet) => tweet.id === post_id);
   const userReducer = useSelector((state) => state.userReducer);
+  const user = userReducer.user;
   const replies = tweets.filter(
     (tweet) => tweet.repliesTo === parseInt(post_id)
   );
-
-  console.log(tweets);
-  console.log(tweet);
-
   return (
     <div>
       {tweet && (
@@ -80,21 +77,17 @@ function Tweet() {
                 className="text-[rgb(91,112,131)]
                         hover:text-[rgb(29,161,242)]
                         cursor-pointer"
-              >
-                Reply
-              </li>
-              <li
-                className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
                 onClick={() => {}}
               >
                 Retweet
               </li>
               <li
-                className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                className={`hover:text-[rgb(29,161,242)]
+                cursor-pointer ${
+                  user.likes.includes(parseInt(post_id))
+                    ? "text-red-500 hover:text-red-600"
+                    : "bg-[rgb(91,112,131)]"
+                }}`}
               >
                 Like
               </li>

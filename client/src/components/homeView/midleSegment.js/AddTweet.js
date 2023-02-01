@@ -1,6 +1,7 @@
 ﻿import React, { useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import _ from "lodash";
+import { postTweet } from "../../../features/twitter/tweetSlice";
 
 import Avatar from "../../Avatar";
 
@@ -8,6 +9,7 @@ function AddTweet() {
   const user = useSelector((state) => state.userReducer.user);
   const [tweetContent, setTweetContent] = useState("");
   const textareaRef = useRef(null);
+  const dispatch = useDispatch();
 
   const textareaOnChange = (e) => {
     const target = e.target;
@@ -16,20 +18,28 @@ function AddTweet() {
     setTweetContent(target.value.length > 280 ? tweetContent : target.value);
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log(tweetContent);
+    const tweet = {
+      user: user.user_id,
+      date: new Date().toISOString(),
+      content: tweetContent,
+      likes: 0,
+      retweets: 0,
+      repliesTo: null,
+    };
+    dispatch(postTweet(tweet));
+    setTweetContent("");
+  };
+
   return (
     <div className="flex border-b-2 border-[rgb(47,51,54)] p-2">
       <div className="mx-2">
         <Avatar user={user} size={50} />
       </div>
 
-      <form
-        className="flex flex-col w-full"
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log(tweetContent);
-          setTweetContent("");
-        }}
-      >
+      <form className="flex flex-col w-full" onSubmit={onSubmit}>
         <textarea
           className="w-full p-2 bg-black
           focus:outline-none focus:ring-2 focus:ring-[rgb(47,51,54)]

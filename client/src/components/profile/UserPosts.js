@@ -9,8 +9,11 @@ function UserPosts() {
   const tweetReducer = useSelector((state) => state.tweetReducer);
   const userStatus = useSelector((state) => state.userReducer.status);
   const userReducer = useSelector((state) => state.userReducer);
+  const user = userReducer.user;
   const dispatch = useDispatch();
   const { user_id } = useParams();
+
+  console.log("user_id", user_id, user);
 
   return (
     <div>
@@ -19,6 +22,7 @@ function UserPosts() {
       </div>
       {tweetStatus === "succeeded" &&
         userStatus === "succeeded" &&
+        tweets &&
         tweets
           // .filter((tweet) => !tweet.repliesTo)
           .filter((tweet) => tweet.user === user_id)
@@ -85,7 +89,7 @@ function UserPosts() {
                         {"@"}
                         {
                           tweetReducer.tweets.find(
-                            (tw) => tw.id === tweet.repliesTo
+                            (tw) => tw.id === tweet.repliesTo + ""
                           ).user
                         }
                       </Link>
@@ -111,9 +115,12 @@ function UserPosts() {
                       Retweet
                     </li>
                     <li
-                      className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                      className={`hover:text-[rgb(29,161,242)]
+                      cursor-pointer ${
+                        user.likes.includes(parseInt(tweet.id))
+                          ? "text-red-500 hover:text-red-600"
+                          : "bg-[rgb(91,112,131)]"
+                      }}`}
                     >
                       Like
                     </li>

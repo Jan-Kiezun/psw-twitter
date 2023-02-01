@@ -2,12 +2,12 @@
 const Schema = mongoose.Schema;
 const validator = require("mongoose-unique-validator");
 const TweetSchema = new Schema({
-  tweet_id: {
+  id: {
     type: String,
     required: true,
     unique: true,
   },
-  user_id: {
+  user: {
     type: String,
     required: true,
   },
@@ -27,7 +27,7 @@ const TweetSchema = new Schema({
     type: Number,
     required: false,
   },
-  replies: {
+  repliesTo: {
     type: Number,
     required: false,
   },
