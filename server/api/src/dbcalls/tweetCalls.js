@@ -4,8 +4,11 @@ exports.getTweet = async (id) => {
   return await Tweet.findOne({ id: id });
 };
 
-exports.getTweets = async (a = 0) => {
-  return await Tweet.find();
+exports.getTweets = async (query = "") => {
+  const result = await Tweet.find({
+    content: { $regex: query, $options: "i" },
+  });
+  return result;
 };
 
 exports.createTweet = async (Tweet) => {

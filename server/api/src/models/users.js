@@ -1,6 +1,7 @@
 ﻿const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("mongoose-unique-validator");
+const bcrypt = require("bcrypt");
 const UserSchema = new Schema({
   user_id: {
     type: String,
@@ -22,15 +23,15 @@ const UserSchema = new Schema({
   },
   bio: {
     type: String,
-    required: false,
+    required: true,
   },
   urlToProfilePicture: {
     type: String,
-    required: false,
+    required: true,
   },
   urlToProfileBackground: {
     type: String,
-    required: false,
+    required: true,
   },
   joined: {
     type: Date,
@@ -38,11 +39,11 @@ const UserSchema = new Schema({
   },
   following: {
     type: Number,
-    required: false,
+    required: true,
   },
   followers: {
     type: Number,
-    required: false,
+    required: true,
   },
   role: {
     type: String,
@@ -50,5 +51,6 @@ const UserSchema = new Schema({
   },
 });
 UserSchema.plugin(validator);
+
 const User = mongoose.model("users", UserSchema);
 module.exports = { User };

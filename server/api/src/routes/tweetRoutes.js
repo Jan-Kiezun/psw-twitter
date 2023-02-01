@@ -18,7 +18,12 @@ router.get("/", async (req, res) => {
   res.status(200).send(tweets);
 });
 
-router.post("/tweets/", async (req, res) => {
+router.get("/search/:query", async (req, res) => {
+  const tweets = await getTweets(req.params.query);
+  res.status(200).send(tweets);
+});
+
+router.post("/", async (req, res) => {
   const tweet = await createTweet(req.body);
   res.status(200).send(tweet);
 });
