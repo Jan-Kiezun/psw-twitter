@@ -5,23 +5,10 @@ import _ from "lodash";
 const userURL = "http://localhost:5001/users";
 
 const initialState = {
-  user: {
-    user_id: "johndoe",
-    username: "John Doe",
-    email: "johndoe@example.com",
-    pswd: "123",
-    bio: "Just a regular guy trying to make the most out of life",
-    urlToProfilePicture:
-      "https://i.pravatar.cc/250?u=johndoe@ashallendesign.co.uk",
-    urlToProfileBackground:
-      "https://www.pexels.com/photo/bearded-man-in-black-jacket-taking-photo-12846570/",
-    joined: "2022-01-01T12:00:00Z",
-    following: 50,
-    followers: 100,
-    role: "user",
-  },
+  user: {},
   users: [],
   userProfile: {},
+  searchedUsers: [],
   status: "idle",
   loading: false,
   error: null,
@@ -36,6 +23,14 @@ export const getUsers = createAsyncThunk("user/getUsers", async () => {
   const response = await axios.get(userURL);
   return response.data;
 });
+
+export const searchUsers = createAsyncThunk(
+  "user/searchUsers",
+  async (query) => {
+    const response = await axios.get(`${userURL}/search/${query}`);
+    return response.data;
+  }
+);
 
 export const addUser = createAsyncThunk("user/addUser", async (user) => {
   const response = await axios.post(userURL, user);
@@ -58,15 +53,17 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const login = createAsyncThunk("user/login", async (user) => {
+  const response = await axios.post(`${userURL}/login`, user);
+  const userData = await axios.get(`${userURL}/${response.data.user_id}`);
+  return userData.data;
+});
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    login: (state, action) => {
-      state.user = action.payload;
-    },
     selectUser: (state, action) => {
-      console.log("selectUser", action.payload);
       state.userProfile =
         _.find(state.users, { user_id: action.payload }) || {};
     },
@@ -123,6 +120,18 @@ export const userSlice = createSlice({
         state.error = action.error.message;
       })
 
+      .addCase(login.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
       .addCase(deleteUser.pending, (state, action) => {
         state.loading = true;
       })
@@ -133,10 +142,22 @@ export const userSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+
+      .addCase(searchUsers.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(searchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.searchedUsers = action.payload;
+      })
+      .addCase(searchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
 
-export const { login, selectUser } = userSlice.actions;
+export const { selectUser } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -21,7 +21,10 @@ function ChatRoom() {
     (state) => state.messageReducer.secretChatsMessages
   );
 
-  const true_chat_id = chat_id.slice(11, chat_id.length);
+  const true_chat_id =
+    chat_id && chat_id.length > 11
+      ? chat_id.slice(11, chat_id.length)
+      : chat_id;
   const messages =
     chat_id &&
     userReducer.status === "succeeded" &&
@@ -122,42 +125,40 @@ function ChatRoom() {
           <div className="flex flex-col gap-2">
             {messages.map((message) => (
               <div
-                key={chat_id + messages.length + "message" + message.timestamp}
-                className={`${!(chat_id === message.user_id) ? "ml-auto" : ""}`}
+                key={
+                  true_chat_id + messages.length + "message" + message.timestamp
+                }
+                className={`${
+                  user.user_id === message.user_id ? "ml-auto" : ""
+                }`}
               >
                 <div
-                  className={`flex gap-2 bg-[rgba(91,112,131,0.3)] w-fit ${
-                    !(chat_id === message.user_id)
-                      ? "flex-row-reverse p-2 pl-4 rounded-[20px] rounded-r-none"
-                      : "p-2 pr-4 rounded-[20px] rounded-l-none"
+                  className={`flex gap-2 p-2 rounded-[20px] w-fit max-w-[400px] ${
+                    user.user_id === message.user_id
+                      ? "flex-row-reverse pl-4 rounded-r-none"
+                      : "pr-4 rounded-l-none"
                   }`}
                 >
                   <img
-                    className="rounded-full w-10 h-10"
+                    className="rounded-full mt-1 w-10 h-10"
                     src={
                       users.find((usr) => message.user_id === usr.user_id)
                         .urlToProfilePicture
                     }
                     alt="profile"
                   />
-                  <div className="flex flex-col">
-                    <h4
+                  <div className="flex flex-col p-3 rounded-[20px] bg-[rgba(91,112,131,0.3)]">
+                    {/* <h4
                       className={`text-[rgb(91,112,131)] font-semibold text-sm ${
-                        !(chat_id === message.user_id) && "text-right"
+                        !(true_chat_id === message.user_id) && "text-right"
                       }`}
                     >
                       {
                         users.find((usr) => message.user_id === usr.user_id)
                           .username
                       }
-                    </h4>
-                    <h4
-                      className={`text-md break-words ${
-                        !(chat_id === message.user_id) && "text-right"
-                      }`}
-                    >
-                      {message.message}
-                    </h4>
+                    </h4> */}
+                    <h4 className={`text-md break-words`}>{message.message}</h4>
                   </div>
                 </div>
               </div>

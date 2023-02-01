@@ -1,28 +1,21 @@
 ﻿import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import Back from "../Back";
 import Avatar from "../Avatar";
-import { useParams, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 
-function UserPosts() {
-  const tweets = useSelector((state) => state.tweetReducer.tweets);
-  const tweetStatus = useSelector((state) => state.tweetReducer.status);
+function SearchedTweets() {
   const tweetReducer = useSelector((state) => state.tweetReducer);
-  const userStatus = useSelector((state) => state.userReducer.status);
+  const searchedTweets = tweetReducer.searchedTweets;
   const userReducer = useSelector((state) => state.userReducer);
-  const dispatch = useDispatch();
-  const { user_id } = useParams();
+  const { search_type, query } = useParams();
 
   return (
-    <div>
-      <div className="text-xl font-semibold border-b-2 border-[rgb(47,51,54)] h-16 flex items-center justify-center">
-        <span className="ml-2">User tweets:</span>
-      </div>
-      {tweetStatus === "succeeded" &&
-        userStatus === "succeeded" &&
-        tweets
-          // .filter((tweet) => !tweet.repliesTo)
-          .filter((tweet) => tweet.user === user_id)
-          .map((tweet) => (
+    <div className="min-w-[500px] border-[rgb(47,51,54)] border-x-[1px] flex flex-col">
+      <Back text={`${search_type} with "${query}"`} />
+      {searchedTweets &&
+        searchedTweets.map((tweet) => (
+          <Link to={`/post/${tweet.id}`} key={tweet.id}>
             <div
               key={tweet.id}
               className="flex border-b-2 border-[rgb(47,51,54)] p-2"
@@ -76,44 +69,27 @@ function UserPosts() {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <p className="text-lg">
-                    {tweet.repliesTo && (
-                      <Link
-                        className="text-[rgb(91,112,131)]"
-                        to={`/post/${tweet.repliesTo}`}
-                      >
-                        {"@"}
-                        {
-                          tweetReducer.tweets.find(
-                            (tw) => tw.id === tweet.repliesTo
-                          ).user
-                        }
-                      </Link>
-                    )}
-                    <Link to={`/post/${tweet.id}`} key={tweet.id}>
-                      {tweet.content}
-                    </Link>
-                  </p>
+                  <p className="text-lg">{tweet.content}</p>
                   <ul className="flex gap-6">
                     <li
                       className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                  hover:text-[rgb(29,161,242)]
+                  cursor-pointer"
                     >
                       Reply
                     </li>
                     <li
                       className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                  hover:text-[rgb(29,161,242)]
+                  cursor-pointer"
                       onClick={() => {}}
                     >
                       Retweet
                     </li>
                     <li
                       className="text-[rgb(91,112,131)]
-                        hover:text-[rgb(29,161,242)]
-                        cursor-pointer"
+                  hover:text-[rgb(29,161,242)]
+                  cursor-pointer"
                     >
                       Like
                     </li>
@@ -121,9 +97,10 @@ function UserPosts() {
                 </div>
               </div>
             </div>
-          ))}
+          </Link>
+        ))}
     </div>
   );
 }
 
-export default UserPosts;
+export default SearchedTweets;

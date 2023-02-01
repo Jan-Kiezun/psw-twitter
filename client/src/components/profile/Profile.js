@@ -29,8 +29,11 @@ function Profile() {
             <Back text="Profile" />
             <div className="flex flex-col items-center">
               <div
+                style={{
+                  backgroundImage: `url("https://picsum.photos/600/300")`,
+                }}
                 className="flex flex-col items-center
-            p-4 border-b-2 border-[rgb(47,51,54)]"
+            p-4 border-b-2 border-[rgb(47,51,54)] w-full"
               >
                 <img
                   className="rounded-full w-32 h-32"

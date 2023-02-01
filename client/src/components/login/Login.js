@@ -1,17 +1,19 @@
 ﻿import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { login } from "../features/twitter/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import userSlice, { login } from "../../features/twitter/userSlice";
+import { Link } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
+  email: Yup.string().email("Invalid email"),
   username: Yup.string().required("Required"),
   password: Yup.string().required("Required"),
 });
 
 function Login() {
   const dispatch = useDispatch();
+  const userReducer = useSelector((state) => state.userReducer);
   return (
     <Formik
       validateOnChange={false}
@@ -22,7 +24,7 @@ function Login() {
       }}
     >
       <div className="absolute bg-gray-600/50 w-full h-full flex justify-center items-center">
-        <div className="bg-black w-[500px] h-[550px] rounded-3xl flex justify-center">
+        <div className="bg-black w-[500px] h-[550px] rounded-3xl flex flex-col items-center">
           <Form className="flex flex-col w-[60%] text-gray-400">
             <img
               className="mx-auto my-4"
@@ -70,6 +72,14 @@ function Login() {
               Login
             </button>
           </Form>
+
+          {userReducer.user === "" && (
+            <div className=" bg-red-500/50 w-[300px] h-[50px] rounded-3xl flex justify-center items-center">
+              <h1 className="text-xl text-white font-semibold">
+                Invalid Credentials
+              </h1>
+            </div>
+          )}
         </div>
       </div>
     </Formik>

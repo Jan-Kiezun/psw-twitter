@@ -6,6 +6,7 @@ const tweetsURL = "http://localhost:5001/tweets";
 
 const initialState = {
   tweets: [],
+  searchedTweets: [],
   status: "idle",
   error: null,
 };
@@ -15,10 +16,18 @@ export const getTweets = createAsyncThunk("tweets/getTweets", async () => {
   return response.data;
 });
 
+export const searchTweets = createAsyncThunk(
+  "tweets/searchTweets",
+  async (query) => {
+    const response = await axios.get(`${tweetsURL}/search/${query}`);
+    return response.data;
+  }
+);
+
 export const addNewTweet = createAsyncThunk(
   "tweets/addNewTweet",
   async (initialTweet) => {
-    const response = await axios.post(tweetsURL, { text: initialTweet.text });
+    const response = await axios.post(tweetsURL, initialTweet);
     return response.data;
   }
 );
@@ -60,6 +69,18 @@ export const tweetSlice = createSlice({
         state.tweets.push(action.payload);
       })
       .addCase(addNewTweet.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(searchTweets.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(searchTweets.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.searchedTweets = action.payload;
+      })
+      .addCase(searchTweets.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });

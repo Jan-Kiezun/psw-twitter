@@ -43,8 +43,8 @@ function ChatList() {
                     {users.find((usr) => user === usr.user_id).username}
                   </h4>
                   <h4 className="text-[rgb(91,112,131)] text-sm">
-                    {allMessages[user].slice(-1)[0].message.slice(0, 15) +
-                      (allMessages[user].slice(-1)[0].message.length > 15
+                    {allMessages[user].slice(-1)[0].message.slice(0, 24) +
+                      (allMessages[user].slice(-1)[0].message.length > 24
                         ? "..."
                         : "")}
                   </h4>
