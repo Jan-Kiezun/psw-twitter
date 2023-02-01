@@ -1,11 +1,11 @@
 ﻿const express = require("express");
 const app = express();
+const logger = require("morgan");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const { User } = require("./src/models/users");
 const { Tweet } = require("./src/models/tweets");
 const { Messages } = require("./src/models/messages");
-const logger = require("morgan");
 const fs = require("fs");
 const cors = require("cors");
 
@@ -44,16 +44,16 @@ async function start() {
     process.exit(1);
   }
 }
+var accessLogStream = fs.createWriteStream("./access.log", { flags: "a" });
+app.use(
+  logger(":method :url :status :res[content-length] - :response-time ms", {
+    stream: accessLogStream,
+  })
+);
+app.use(logger("dev"));
 
 app.use("/users", require("./src/routes/userRoutes"));
 app.use("/tweets", require("./src/routes/tweetRoutes"));
 app.use("/messages", require("./src/routes/messageRoutes"));
-
-app.use(
-  logger("common", {
-    stream: fs.createWriteStream("./access.log", { flags: "a" }),
-  })
-);
-app.use(logger("dev"));
 
 start();

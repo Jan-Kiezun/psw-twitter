@@ -16,7 +16,7 @@ exports.createTweet = async (tweetData) => {
   const tweetId = await Tweet.find().sort({ id: -1 }).limit(1);
   const tweet = new Tweet({
     ...tweetData,
-    id: tweetId[0].id + 1,
+    id: parseInt(tweetId[0].id) + 1 + "",
   });
   return await tweet.save();
 };
@@ -32,7 +32,8 @@ exports.updateTweet = async (id, tweet) => {
   //   { new: true }
   // );
   const returnValue = await Tweet.find({ id: id });
-  console.log(returnValue);
+  console.log(returnValue, tweet, id);
+  // NIE DZIALA TAK O
   return returnValue;
 };
 

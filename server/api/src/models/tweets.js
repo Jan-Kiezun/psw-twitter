@@ -2,10 +2,6 @@
 const Schema = mongoose.Schema;
 const validator = require("mongoose-unique-validator");
 const TweetSchema = new Schema({
-  _id: {
-    type: String,
-    required: true,
-  },
   id: {
     type: String,
     required: true,
