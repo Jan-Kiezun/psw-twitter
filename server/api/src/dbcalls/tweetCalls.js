@@ -20,10 +20,15 @@ exports.createTweet = async (tweetData) => {
   return await tweet.save();
 };
 
-exports.updateTweet = async (id, Tweet) => {
-  return await Tweet.updateOne(id, Tweet);
+exports.updateTweet = async (id, tweet) => {
+  return await Tweet.findOneAndUpdate({ id: id }, tweet, { new: true });
 };
 
 exports.deleteTweet = async (id) => {
-  return await Tweet.deleteOne({ id: id });
+  const deleted = await Tweet.find({ id: id });
+  await Tweet.deleteOne({ id: id });
+  const deletedReplies = await Tweet.find({ repliesTo: parseInt(id) });
+  await Tweet.deleteMany({ repliesTo: parseInt(id) });
+  console.log(deletedReplies, deleted);
+  return [deleted[0].id, ...deletedReplies.map((reply) => reply.id)];
 };

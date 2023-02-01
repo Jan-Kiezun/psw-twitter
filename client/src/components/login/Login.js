@@ -1,9 +1,11 @@
-﻿import React from "react";
+﻿import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import userSlice, { login } from "../../features/twitter/userSlice";
 import { Link } from "react-router-dom";
+import { getTweets } from "../../features/twitter/tweetSlice";
+import { getUsers } from "../../features/twitter/userSlice";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email"),
@@ -14,6 +16,13 @@ const validationSchema = Yup.object().shape({
 function Login() {
   const dispatch = useDispatch();
   const userReducer = useSelector((state) => state.userReducer);
+  const tweets = useSelector((state) => state.tweetReducer.tweets);
+
+  useEffect(() => {
+    if (!tweets.length) dispatch(getTweets());
+    if (!userReducer.users.length) dispatch(getUsers());
+  }, [dispatch, tweets, userReducer.users]);
+
   return (
     <Formik
       validateOnChange={false}

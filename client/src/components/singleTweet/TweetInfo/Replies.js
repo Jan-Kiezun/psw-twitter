@@ -6,14 +6,14 @@ import Avatar from "../../Avatar";
 function Replies() {
   const { post_id } = useParams();
   const tweetReducer = useSelector((state) => state.tweetReducer);
-  const tweet = tweetReducer.tweets.find(
-    (tweet) => tweet.id === parseInt(post_id)
-  );
+  const tweet = tweetReducer.tweets.find((tweet) => tweet.id === post_id);
   const replies = tweetReducer.tweets.filter(
     (tweet) => tweet.repliesTo === parseInt(post_id)
   );
   const userReducer = useSelector((state) => state.userReducer);
   const user = userReducer.user;
+
+  console.log(replies, tweet);
 
   return (
     <div>
@@ -97,7 +97,7 @@ function Replies() {
                   <li
                     className={`${
                       user.likes.includes(parseInt(reply.id))
-                        ? "text-[rgb(29,161,242)]"
+                        ? "text-red-500"
                         : "text-[rgb(91,112,131)]"
                     }
                         hover:text-[rgb(29,161,242)]

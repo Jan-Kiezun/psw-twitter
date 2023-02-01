@@ -5,6 +5,7 @@ import Back from "../Back";
 import UserPosts from "./UserPosts";
 import { useParams } from "react-router-dom";
 import { selectUser, getUsers } from "../../features/twitter/userSlice";
+import { getTweets } from "../../features/twitter/tweetSlice";
 import _ from "lodash";
 
 function Profile() {
@@ -13,9 +14,11 @@ function Profile() {
   const userReducer = useSelector((state) => state.userReducer);
   const userProfile = useSelector((state) => state.userReducer.userProfile);
   const users = useSelector((state) => state.userReducer.users);
+  const tweets = useSelector((state) => state.tweetReducer.tweets);
 
   useEffect(() => {
     if (_.isEmpty(users)) dispatch(getUsers());
+    if (!tweets.length) dispatch(getTweets());
     dispatch(selectUser(user_id));
   }, [dispatch, user_id, users]);
 

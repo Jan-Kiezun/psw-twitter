@@ -1,10 +1,18 @@
-﻿import React from "react";
-import { useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+﻿import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Avatar from "../../Avatar";
+import {
+  getTweets,
+  updateTweet,
+  deleteTweet,
+} from "../../../features/twitter/tweetSlice";
+import { getUsers } from "../../../features/twitter/userSlice";
 
 function Tweet() {
   const { post_id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const tweets = useSelector((state) => state.tweetReducer.tweets);
   const tweet = tweets.find((tweet) => tweet.id === post_id);
   const userReducer = useSelector((state) => state.userReducer);
@@ -12,9 +20,23 @@ function Tweet() {
   const replies = tweets.filter(
     (tweet) => tweet.repliesTo === parseInt(post_id)
   );
+  const [edit, setEdit] = useState(false);
+  const [text, setText] = useState(tweet?.content || "");
+
+  const handleEdit = () => {
+    const newTweet = {
+      ...tweet,
+      id: tweet.id,
+      date: new Date().toISOString(),
+      content: text,
+    };
+    dispatch(updateTweet({ id: tweet.id, content: text }));
+    setEdit(!edit);
+  };
+
   return (
     <div>
-      {tweet && (
+      {tweet && user && userReducer.users.length && (
         <div
           key={tweet.id}
           className="flex border-b-2 border-[rgb(47,51,54)] p-4 flex-col"
@@ -62,16 +84,52 @@ function Tweet() {
               </div>
             </div>
           </div>
-          <p className="text-white text-lg font-semibold mt-2 mb-2 w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
-            {tweet.content}
-          </p>
+          {edit ? (
+            <form className="flex flex-col w-full" onSubmit={handleEdit}>
+              <textarea
+                className="w-full h-24 text-white bg-[rgb(47,51,54)] border-2 border-[rgb(47,51,54)] focus:outline-none focus:border-[rgb(29,161,242)]"
+                value={text}
+                onChange={(e) =>
+                  setText(e.target.value.length > 280 ? text : e.target.value)
+                }
+              />
+              <button
+                className="text-[rgb(91,112,131)]
+                  hover:text-[rgb(29,161,242)]
+                  cursor-pointer"
+                type="submit"
+              >
+                Save
+              </button>
+            </form>
+          ) : (
+            <p className="text-white text-lg font-semibold mt-2 mb-2 w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+              {tweet.repliesTo && (
+                <Link to={`/post/${tweet.repliesTo}`}>
+                  <span
+                    className="
+                  text-[rgb(91,112,131)]
+                  hover:text-[rgb(29,161,242)]
+                  cursor-pointer
+                "
+                  >
+                    @
+                    {tweets.length &&
+                      tweets.find((twt) => twt.id === tweet.repliesTo + "")
+                        .user}{" "}
+                  </span>
+                </Link>
+              )}
+              {tweet.content}
+            </p>
+          )}
           <div className="flex flex-row">
             <h3 className="text-white">{tweet.likes}</h3>
             <h3 className="text-[rgb(91,112,131)]">Likes</h3>
             <h3 className="text-white">{replies.length}</h3>
-            <h3 className="text-[rgb(91,112,131)]">Retweets</h3>
+            <h3 className="text-[rgb(91,112,131)]">Replies</h3>
           </div>
-          <div className="flex flex-col">
+          <div className="flex justify-between">
             <ul className="flex gap-6">
               <li
                 className="text-[rgb(91,112,131)]
@@ -92,6 +150,33 @@ function Tweet() {
                 Like
               </li>
             </ul>
+            {(user.user_id === tweet.user ||
+              user.role === "moderator" ||
+              user.role === "admin") && (
+              <ul className="flex gap-6">
+                <li
+                  className="text-[rgb(91,112,131)]
+                        hover:text-[rgb(29,161,242)]
+                        cursor-pointer"
+                  onClick={() => {
+                    setEdit(!edit);
+                  }}
+                >
+                  Edit
+                </li>
+                <li
+                  className="text-[rgb(91,112,131)]
+                        hover:text-[rgb(29,161,242)]
+                        cursor-pointer"
+                  onClick={() => {
+                    dispatch(deleteTweet(post_id));
+                    navigate("/home");
+                  }}
+                >
+                  Delete
+                </li>
+              </ul>
+            )}
           </div>
         </div>
       )}

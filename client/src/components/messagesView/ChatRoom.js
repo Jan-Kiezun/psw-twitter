@@ -122,12 +122,9 @@ function ChatRoom() {
               <h4 className="font-semibold text-xl">{chat_id}</h4>
             </div>
           )}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 overflow-auto">
             {messages.map((message) => (
               <div
-                key={
-                  true_chat_id + messages.length + "message" + message.timestamp
-                }
                 className={`${
                   user.user_id === message.user_id ? "ml-auto" : ""
                 }`}

@@ -33,6 +33,22 @@ export const postTweet = createAsyncThunk(
   }
 );
 
+export const updateTweet = createAsyncThunk(
+  "tweets/updateTweet",
+  async (tweet) => {
+    const response = await axios.put(`${tweetsURL}/${tweet.id}`, tweet);
+    return response.data;
+  }
+);
+
+export const deleteTweet = createAsyncThunk(
+  "tweets/deleteTweet",
+  async (id) => {
+    const response = await axios.delete(`${tweetsURL}/${id}`);
+    return response.data;
+  }
+);
+
 export const tweetSlice = createSlice({
   name: "tweets",
   initialState,
@@ -83,6 +99,39 @@ export const tweetSlice = createSlice({
         state.searchedTweets = action.payload;
       })
       .addCase(searchTweets.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(updateTweet.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateTweet.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.tweets = state.tweets.map((tweet) => {
+          if (tweet.id === action.payload.id) {
+            return action.payload;
+          } else {
+            return tweet;
+          }
+        });
+      })
+      .addCase(updateTweet.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+
+      .addCase(deleteTweet.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(deleteTweet.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log(action.payload);
+        state.tweets = state.tweets.filter(
+          (tweet) => !action.payload.includes(tweet.id)
+        );
+      })
+      .addCase(deleteTweet.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
