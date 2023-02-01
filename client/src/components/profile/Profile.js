@@ -30,7 +30,7 @@ function Profile() {
         !_.isEmpty(userProfile) ? (
           <div className="min-w-[500px] border-[rgb(47,51,54)] border-x-[1px] flex flex-col">
             <Back text="Profile" />
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center text_shadow">
               <div
                 style={{
                   backgroundImage: `url("https://picsum.photos/600/300")`,

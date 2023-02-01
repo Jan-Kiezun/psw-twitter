@@ -9,6 +9,12 @@ import {
 import { getUsers } from "../../features/twitter/userSlice";
 import _ from "lodash";
 
+const AlwaysScrollToBottom = () => {
+  const elementRef = useRef();
+  useEffect(() => elementRef.current.scrollIntoView());
+  return <div ref={elementRef} />;
+};
+
 function ChatRoom() {
   const { user_id: chat_id } = useParams();
   const dispatch = useDispatch();
@@ -20,7 +26,6 @@ function ChatRoom() {
   const secretChatsMessages = useSelector(
     (state) => state.messageReducer.secretChatsMessages
   );
-
   const true_chat_id =
     chat_id && chat_id.length > 11
       ? chat_id.slice(11, chat_id.length)
@@ -47,6 +52,7 @@ function ChatRoom() {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    if (!e.target[0].value) return;
     const message = {
       user_id: user.user_id,
       message: e.target[0].value,
@@ -122,7 +128,7 @@ function ChatRoom() {
               <h4 className="font-semibold text-xl">{chat_id}</h4>
             </div>
           )}
-          <div className="flex flex-col gap-2 overflow-auto">
+          <div className="flex flex-col max-h-[calc(100vh-100px)] gap-2 overflow-y-scroll scrollbar-hide">
             {messages.map((message) => (
               <div
                 className={`${
@@ -160,6 +166,7 @@ function ChatRoom() {
                 </div>
               </div>
             ))}
+            <AlwaysScrollToBottom />
           </div>
         </div>
       ) : (

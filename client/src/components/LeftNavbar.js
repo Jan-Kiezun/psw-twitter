@@ -7,7 +7,7 @@ function LeftSidebar() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.userReducer.user);
   return (
-    <nav className="w-full min-w-[300px] flex flex-col sticky">
+    <nav className="w-full min-w-[300px] h-[100vh] flex flex-col sticky">
       <img
         className="my-2 mt-4 ml-6"
         draggable="false"
